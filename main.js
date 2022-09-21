@@ -109,9 +109,6 @@ function main() {
         if (event.keyCode == 68) {
             turnRight = true;
         }
-        if (event.keyCode == 68) {
-            turnRight = true;
-        }
         if (event.keyCode == 87) {
             turnUp = true;
         }
