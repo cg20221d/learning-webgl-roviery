@@ -3,10 +3,10 @@ function main() {
     var gl = kanvas.getContext("webgl");
 
     var vertices = [
-        0.5, 0.5,   // A: kanan atas
-        0.0, 0.0,   // B: bawah tengah
-        -0.5, 0.5,  // C: kiri atas
-        0.0, 1.0    // D: atas tengah
+        0.5, 0.5, 0.0, 1.0, 0.7,   // A: kanan atas    (BIRU LANGIT)
+        0.0, 0.0, 1.0, 0.0, 0.2,   // B: bawah tengah  (MAGENTA)
+        -0.5, 0.5, 0.3, 1.0, 0.0,  // C: kiri atas     (KUNING)
+        0.0, 1.0, 1.0, 1.0, 1.0    // D: atas tengah   (PUTIH)
     ];
 
     var buffer = gl.createBuffer();
@@ -16,11 +16,14 @@ function main() {
     // Vertex shader
     var vertexShaderCode =  `
     attribute vec2 aPosition;
+    attribute vec3 aColor;
+    varying vec3 vColor; 
     void main() {
         float x = aPosition.x;
         float y = aPosition.y;
         gl_PointSize = 10.0;
         gl_Position = vec4(x, y, 0.0, 1.0);
+        vColor = aColor;
     }
     `;
     var vertexShaderObject = gl.createShader(gl.VERTEX_SHADER);
@@ -30,11 +33,9 @@ function main() {
     // Fragment shader
     var fragmentShaderCode = `
     precision mediump float;
+    varying vec3 vColor;
     void main() {
-        float r = 0.0;
-        float g = 0.0;
-        float b = 1.0;
-        gl_FragColor = vec4(r, g, b, 1.0);
+        gl_FragColor = vec4(vColor, 1.0);
     }
     `;
     var fragmentShaderObject = gl.createShader(gl.FRAGMENT_SHADER);
@@ -51,16 +52,22 @@ function main() {
     //  nilai posisi dari ARRAY_BUFFER
     //  untuk setiap verteks yang sedang diproses
     var aPosition = gl.getAttribLocation(shaderProgram, "aPosition");
-    gl.vertexAttribPointer(aPosition, 2, gl.FLOAT, false, 0, 0);
+    gl.vertexAttribPointer(aPosition, 2, gl.FLOAT, false, 
+        5 * Float32Array.BYTES_PER_ELEMENT,
+        0);
     gl.enableVertexAttribArray(aPosition);
+    var aColor = gl.getAttribLocation(shaderProgram, "aColor");
+    gl.vertexAttribPointer(aColor, 3, gl.FLOAT, false, 
+        5 * Float32Array.BYTES_PER_ELEMENT, 
+        2 * Float32Array.BYTES_PER_ELEMENT);
+    gl.enableVertexAttribArray(aColor);
+
 
     gl.clearColor(1.0,      0.65,    0.0,    1.0);  // Oranye
     //            Merah     Hijau   Biru    Transparansi
     gl.clear(gl.COLOR_BUFFER_BIT);
 
-    gl.drawArrays(gl.POINTS, 0, 4);
+    // gl.drawArrays(gl.POINTS, 0, 4);
     gl.drawArrays(gl.LINE_LOOP, 0, 4);
-    // gl.drawArrays(gl.LINE_STRIP, 0, 4);
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-    // gl.drawArrays(gl.TRIANGLE_FAN, 0, 4)
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
 }
