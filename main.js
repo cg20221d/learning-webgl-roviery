@@ -3,10 +3,10 @@ function main() {
     var gl = kanvas.getContext("webgl");
 
     var vertices = [
-        0.5, 0.0, 0.0, 1.0, 0.7,   // A: kanan atas    (BIRU LANGIT)
-        0.0, -0.5, 1.0, 0.0, 0.2,   // B: bawah tengah  (MAGENTA)
-        -0.5, 0.0, 0.3, 1.0, 0.0,  // C: kiri atas     (KUNING)
-        0.0, 0.5, 1.0, 1.0, 1.0    // D: atas tengah   (PUTIH)
+        0.5, 0.0, 0.0, 1.0, 0.7,   // A: kanan atas  
+        0.0, -0.5, 1.0, 0.0, 0.2,   // B: bawah tengah  
+        -0.5, 0.0, 0.3, 1.0, 0.0,  // C: kiri atas    
+        0.0, 0.5, 1.0, 1.0, 1.0    // D: atas tengah 
     ];
 
     var buffer = gl.createBuffer();
@@ -76,11 +76,6 @@ function main() {
     var uDown = gl.getUniformLocation(shaderProgram, "uDown");
     var uUp = gl.getUniformLocation(shaderProgram, "uUp");
 
-
-
-    //  kita mengajari GPU bagaimana caranya mengoleksi
-    //  nilai posisi dari ARRAY_BUFFER
-    //  untuk setiap verteks yang sedang diproses
     var aPosition = gl.getAttribLocation(shaderProgram, "aPosition");
     gl.vertexAttribPointer(aPosition, 2, gl.FLOAT, false,
         5 * Float32Array.BYTES_PER_ELEMENT,
@@ -163,9 +158,6 @@ function main() {
     }
 
     setInterval(render, 1000 / 60);
-
-    // gl.drawArrays(gl.POINTS, 0, 4);
-    gl.drawArrays(gl.LINE_LOOP, 0, 4);
 }
 
 
