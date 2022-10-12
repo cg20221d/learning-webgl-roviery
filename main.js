@@ -17,16 +17,12 @@ function main() {
     var vertexShaderCode = `
     attribute vec2 aPosition;
     attribute vec3 aColor;
-    uniform float uTheta;
-    uniform float uHorizontal;
-    uniform float uVertical;
+    uniform mat4 uModel;
     varying vec3 vColor; 
     void main() {
-        float x = -sin(uTheta)*aPosition.x+cos(uTheta)*aPosition.y;
-        float y = cos(uTheta)*aPosition.x+sin(uTheta)*aPosition.y;
-        x += uHorizontal;
-        y += uVertical;
-        gl_Position = vec4(x, y, 0.0, 1.0);
+        vec2 position = aPosition;
+        vec3 d = vec3(0.5, -0.5, 0.0);
+        gl_Position = uModel * vec4(position, 0.0, 1.0);
         vColor = aColor;
     }
     `;
@@ -65,8 +61,7 @@ function main() {
 
     // Variabel pointer ke GLSL
     var uTheta = gl.getUniformLocation(shaderProgram, "uTheta");
-    var uHorizontal = gl.getUniformLocation(shaderProgram, "uHorizontal");
-    var uVertical = gl.getUniformLocation(shaderProgram, "uVertical");
+    var uModel = gl.getUniformLocation(shaderProgram, "uModel");
 
     var aPosition = gl.getAttribLocation(shaderProgram, "aPosition");
     gl.vertexAttribPointer(aPosition, 2, gl.FLOAT, false,
@@ -127,25 +122,25 @@ function main() {
         gl.clearColor(1.0, 0.65, 0.0, 1.0);
         gl.clear(gl.COLOR_BUFFER_BIT);
         if (!freeze) {
-            theta += 0.01;
-            gl.uniform1f(uTheta, theta);
+            theta += 0.05;
         }
         if (turnLeft){
-            horizontal -= 0.01;
-            gl.uniform1f(uHorizontal, horizontal);
+            horizontal -= 0.03;
         }
         if (turnRight){
-            horizontal += 0.01;
-            gl.uniform1f(uHorizontal, horizontal);
+            horizontal += 0.03;
         }
         if (turnUp){
-            vertical += 0.01;
-            gl.uniform1f(uVertical, vertical);
+            vertical += 0.03;
         }
         if (turnDown){
-            vertical -= 0.01;
-            gl.uniform1f(uVertical, vertical);
+            vertical -= 0.03;
         }
+
+        var model = glMatrix.mat4.create();
+        glMatrix.mat4.translate(model, model, [horizontal, vertical, 0.0]);
+        glMatrix.mat4.rotateZ(model, model, theta);
+        gl.uniformMatrix4fv(uModel, false, model);
         gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
     }
 
