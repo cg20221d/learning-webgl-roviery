@@ -118,6 +118,8 @@ function main() {
     document.addEventListener("keydown", onKeyDown);
     document.addEventListener("keyup", onKeyUp);
 
+    var scale = 1.0
+
     function render() {
         gl.clearColor(1.0, 0.65, 0.0, 1.0);
         gl.clear(gl.COLOR_BUFFER_BIT);
@@ -126,20 +128,25 @@ function main() {
         }
         if (turnLeft){
             horizontal -= 0.03;
+            scale -= 0.01;
         }
         if (turnRight){
             horizontal += 0.03;
+            scale += 0.01;
         }
         if (turnUp){
             vertical += 0.03;
+            scale += 0.01;
         }
         if (turnDown){
             vertical -= 0.03;
+            scale -= 0.01;
         }
 
         var model = glMatrix.mat4.create();
         glMatrix.mat4.translate(model, model, [horizontal, vertical, 0.0]);
         glMatrix.mat4.rotateZ(model, model, theta);
+        glMatrix.mat4.scale(model, model, [scale, scale, 0.0]);
         gl.uniformMatrix4fv(uModel, false, model);
         gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
     }
